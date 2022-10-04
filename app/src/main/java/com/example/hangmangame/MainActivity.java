@@ -9,6 +9,8 @@ import android.widget.Button;
 
 import com.google.android.material.button.MaterialButton;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     Game game;
@@ -16,6 +18,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button a, s, d, f, g, h, j, k, l;
     Button z, x, c, v, b, n, m;
     Button restart;
+    ArrayList<Button> inactive;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         game = new Game();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentFrame, game).commit();
+        inactive = new ArrayList<>();
 
         q = setButton(R.id.q);
         w = setButton(R.id.w);
@@ -67,6 +71,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         game.mainActivityButtonInput(buttonText);
         if (buttonText.charAt(0) >= 97 && buttonText.charAt(0) <= 122) {
             button.setEnabled(false);
+            inactive.add(button);
+        }
+        if (buttonText.equals("New Game")) {
+            game.newGame();
+            for (int i = 0; i < inactive.size(); i++) {
+                inactive.get(i).setEnabled(true);
+            }
         }
     }
 }

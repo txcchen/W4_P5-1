@@ -5,4 +5,5 @@
     <string name="hangman_picture_here">Hangman Picture Here</string>
     <string name="choose_a_letter">CHOOSE A LETTER</string>
     <string name="restart_the_game">Restart the game</string>
+    <string name="new_game">New Game</string>
 </resources>

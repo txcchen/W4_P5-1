@@ -269,5 +269,5 @@
         android:layout_marginTop="15dp"
         android:backgroundTint="#E91E63"
         android:id="@+id/restart"
-        android:text="@string/restart_the_game" />
+        android:text="@string/new_game" />
 </RelativeLayout>

@@ -2,13 +2,8 @@ package com.example.hangmangame;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +28,7 @@ public class Game extends Fragment {
 
     View view;
     private final String[] meat = {"beef", "pork", "salmon", "turkey", "lamb", "duck", "boar"};
-    private final String[] vegetable = {"beans", "carrot", "inger", "onion", "pea", "corn", "celery"};
+    private final String[] vegetable = {"bean", "carrot", "ginger", "onion", "pea", "corn", "celery"};
     private final String[] kinds = {"meat", "vegetable"};
     private final String[][] all = {meat, vegetable};
     private gameListener listener;
@@ -138,6 +134,11 @@ public class Game extends Fragment {
             if (count == chance)
                 Toast.makeText(this.getContext(), "You Lose!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void newGame() {
+        linearLayout.removeAllViews();
+        startUp();
     }
 
     @Override
