@@ -7,6 +7,7 @@ import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +36,7 @@ public class Game extends Fragment {
     int kind, index, count, correct;
     String currentWord, hint;
     LinearLayout linearLayout;
+    ImageView imageView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -76,6 +78,7 @@ public class Game extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_game, container, false);
+        imageView = view.findViewById(R.id.progress);
         linearLayout = view.findViewById(R.id.words);
         startUp();
         return view;
@@ -119,7 +122,6 @@ public class Game extends Fragment {
             for (int i = 0; i < currentWord.length(); i++) {
                 if (currentWord.charAt(i) == in) {
                     TextView textView = view.findViewById(i);
-                    System.out.println("Char: " + in);
                     SpannableString content = new SpannableString(String.valueOf(in).toUpperCase());
                     content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
                     textView.setText(content);
@@ -131,6 +133,26 @@ public class Game extends Fragment {
             }
         } else {
             count++;
+            switch (count) {
+                case 1:
+                    imageView.setImageResource(R.drawable.img_1);
+                    break;
+                case 2:
+                    imageView.setImageResource(R.drawable.img_2);
+                    break;
+                case 3:
+                    imageView.setImageResource(R.drawable.img_3);
+                    break;
+                case 4:
+                    imageView.setImageResource(R.drawable.img_4);
+                    break;
+                case 5:
+                    imageView.setImageResource(R.drawable.img_5);
+                    break;
+                case 6:
+                    imageView.setImageResource(R.drawable.img_6);
+                    break;
+            }
             if (count == chance)
                 Toast.makeText(this.getContext(), "You Lose!", Toast.LENGTH_SHORT).show();
         }

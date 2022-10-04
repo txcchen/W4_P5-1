@@ -14,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:contentDescription="@string/hangman_picture_here"
-        android:src="#FF9800" />
+        android:src="@drawable/img_0" />
 
     <LinearLayout
         android:id="@+id/words"
