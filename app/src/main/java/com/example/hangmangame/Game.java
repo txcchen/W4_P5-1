@@ -160,6 +160,7 @@ public class Game extends Fragment {
 
     public void newGame() {
         linearLayout.removeAllViews();
+        imageView.setImageResource(R.drawable.img_0);
         startUp();
     }
 
