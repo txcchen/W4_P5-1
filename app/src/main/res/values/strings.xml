@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">HangmanGame</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hangman_picture_here">Hangman Picture Here</string>
+    <string name="choose_a_letter">CHOOSE A LETTER</string>
+    <string name="restart_the_game">Restart the game</string>
+</resources>
