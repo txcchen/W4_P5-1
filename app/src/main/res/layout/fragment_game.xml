@@ -29,7 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="Word shows here"
+            android:id="@+id/text"
+            android:text=""
             android:textSize="40sp" />
     </LinearLayout>
 

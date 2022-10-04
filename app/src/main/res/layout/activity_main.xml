@@ -7,9 +7,8 @@
     android:layout_gravity="center_vertical"
     tools:context=".MainActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment"
-        android:name="com.example.hangmangame.Game"
+    <FrameLayout
+        android:id="@+id/fragmentFrame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout="@layout/fragment_game" />
@@ -18,7 +17,7 @@
         android:id="@+id/message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/fragment"
+        android:layout_below="@id/fragmentFrame"
         android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
         android:text="@string/choose_a_letter"
@@ -269,5 +268,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:backgroundTint="#E91E63"
+        android:id="@+id/restart"
         android:text="@string/restart_the_game" />
 </RelativeLayout>
