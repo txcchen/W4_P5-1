@@ -35,12 +35,10 @@ public class Game extends Fragment {
     private final String[] vegetable = {"beans", "carrot", "inger", "onion", "pea", "corn", "celery"};
     private final String[] kinds = {"meat", "vegetable"};
     private final String[][] all = {meat, vegetable};
-    private final int chance = 6;
     private gameListener listener;
-    int kind, index, count;
-    String underscoreWord, currentWord, hint;
-    StringBuilder stringBuilder;
-    TextView textView;
+    int kind, index, count, correct;
+    String currentWord, hint;
+    LinearLayout linearLayout;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -82,25 +80,31 @@ public class Game extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_game, container, false);
-        textView = view.findViewById(R.id.text);
+        linearLayout = view.findViewById(R.id.words);
         startUp();
         return view;
     }
 
     private void startUp() {
         count = 0;
+        correct = 0;
         kind = getRandomNumber(2);
         index = getRandomNumber(7);
         hint = kinds[kind];
         currentWord = all[kind][index];
-        stringBuilder = new StringBuilder();
         for (int i = 0; i < currentWord.length(); i++) {
-            stringBuilder.append("_");
-            stringBuilder.append(" ");
+            TextView textView = new TextView(this.getContext());
+            textView.setId(i);
+            textView.setTextSize(40);
+            SpannableString content = new SpannableString("  ");
+            content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+            textView.setText(content);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
+                    (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.setMargins(10, 10, 10, 10);
+            textView.setLayoutParams(params);
+            linearLayout.addView(textView);
         }
-        underscoreWord = stringBuilder.toString();
-        textView.setText(underscoreWord);
-        stringBuilder.setLength(0);
         System.out.println("Word: " + currentWord);
     }
 
@@ -113,25 +117,26 @@ public class Game extends Fragment {
     }
 
     public void mainActivityButtonInput(String input) {
-        count++;
+        int chance = 6;
         if (currentWord.contains(input)) {
             char in = input.charAt(0);
-            stringBuilder.append(underscoreWord);
             for (int i = 0; i < currentWord.length(); i++) {
                 if (currentWord.charAt(i) == in) {
-                    stringBuilder.setCharAt(i * 2, in);
+                    TextView textView = view.findViewById(i);
+                    System.out.println("Char: " + in);
+                    SpannableString content = new SpannableString(String.valueOf(in).toUpperCase());
+                    content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                    textView.setText(content);
+                    correct++;
                 }
             }
-            underscoreWord = stringBuilder.toString();
-            textView.setText(underscoreWord);
-            stringBuilder.setLength(0);
-            if (!underscoreWord.contains("_")) {
+            if (count <= chance && correct == currentWord.length()) {
                 Toast.makeText(this.getContext(), "You Win!", Toast.LENGTH_SHORT).show();
             }
-        }
-
-        if (count == chance && underscoreWord.contains("_")) {
-            Toast.makeText(this.getContext(), "You Lose!", Toast.LENGTH_SHORT).show();
+        } else {
+            count++;
+            if (count == chance)
+                Toast.makeText(this.getContext(), "You Lose!", Toast.LENGTH_SHORT).show();
         }
     }
 
