@@ -3,6 +3,7 @@ package com.example.hangmangame;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,13 +29,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     ArrayList<Button> inactive;
     ArrayList<Button> keyboard;
     private int numHint = 0;
+    int orientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        giveHint = findViewById(R.id.giveHint);
+
+        orientation = this.getResources().getConfiguration().orientation;
+
+        //get Hint only if in landscape mode
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            giveHint = findViewById(R.id.giveHint);
+            hint = setButton(R.id.hint);
+        }
 
         game = new Game();
         getSupportFragmentManager().beginTransaction().replace(R.id.fragmentFrame, game).commit();
@@ -67,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         n = setButton(R.id.n);
         m = setButton(R.id.m);
         restart = setButton(R.id.restart);
-        hint = setButton(R.id.hint);
 
         keyboard=new ArrayList<Button>();
         keyboard.addAll(Arrays.asList(q,w,e,r,t,y,u,i,o,p,a,s,d,f,g,h,j,k,l,z,x,c,v,b,n,m));
@@ -96,7 +104,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 inactive.get(i).setEnabled(true);
             }
             inactive.removeAll(inactive);
-            giveHint.setText("");
+
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                giveHint.setText("");
+            }
             numHint = 0;
         }
 
