@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import org.w3c.dom.Text;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,8 +36,12 @@ public class Game extends Fragment {
     private final String[] kinds = {"meat", "vegetable"};
     private final String[][] all = {meat, vegetable};
     private gameListener listener;
+
+    int chance = 6;
+
     int kind, index, count, correct;
     String currentWord, hint;
+    int numHint = 0;
     LinearLayout linearLayout;
     ImageView imageView;
 
@@ -116,7 +123,8 @@ public class Game extends Fragment {
     }
 
     public void mainActivityButtonInput(String input) {
-        int chance = 6;
+
+
         if (currentWord.contains(input)) {
             char in = input.charAt(0);
             for (int i = 0; i < currentWord.length(); i++) {
@@ -124,6 +132,7 @@ public class Game extends Fragment {
                     TextView textView = view.findViewById(i);
                     SpannableString content = new SpannableString(String.valueOf(in).toUpperCase());
                     content.setSpan(new UnderlineSpan(), 0, content.length(), 0);
+                    Log.d("underline", content.toString());
                     textView.setText(content);
                     correct++;
                 }
@@ -132,30 +141,35 @@ public class Game extends Fragment {
                 Toast.makeText(this.getContext(), "You Win!", Toast.LENGTH_SHORT).show();
             }
         } else {
-            count++;
-            switch (count) {
-                case 1:
-                    imageView.setImageResource(R.drawable.img_1);
-                    break;
-                case 2:
-                    imageView.setImageResource(R.drawable.img_2);
-                    break;
-                case 3:
-                    imageView.setImageResource(R.drawable.img_3);
-                    break;
-                case 4:
-                    imageView.setImageResource(R.drawable.img_4);
-                    break;
-                case 5:
-                    imageView.setImageResource(R.drawable.img_5);
-                    break;
-                case 6:
-                    imageView.setImageResource(R.drawable.img_6);
-                    break;
-            }
-            if (count == chance)
-                Toast.makeText(this.getContext(), "You Lose!", Toast.LENGTH_SHORT).show();
+            if (!(input.equals("Hint")))
+                drawHangman(chance);
         }
+    }
+
+    public void drawHangman(int chance){
+        count++;
+        switch (count) {
+            case 1:
+                imageView.setImageResource(R.drawable.img_1);
+                break;
+            case 2:
+                imageView.setImageResource(R.drawable.img_2);
+                break;
+            case 3:
+                imageView.setImageResource(R.drawable.img_3);
+                break;
+            case 4:
+                imageView.setImageResource(R.drawable.img_4);
+                break;
+            case 5:
+                imageView.setImageResource(R.drawable.img_5);
+                break;
+            case 6:
+                imageView.setImageResource(R.drawable.img_6);
+                break;
+        }
+        if (count == chance)
+            Toast.makeText(this.getContext(), "You Lose!", Toast.LENGTH_SHORT).show();
     }
 
     public void newGame() {
@@ -176,4 +190,8 @@ public class Game extends Fragment {
         super.onDetach();
         listener = null;
     }
+
 }
+
+
+

@@ -261,13 +261,47 @@
 
     </TableLayout>
 
+    <!-- hint button-->
+
     <Button
+        android:id="@+id/restart"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/keyboard"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="49dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="247dp"
         android:backgroundTint="#E91E63"
-        android:id="@+id/restart"
         android:text="@string/new_game" />
+
+    <Button
+        android:id="@+id/hint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/keyboard"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="187dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="136dp"
+        android:backgroundTint="#E91E63"
+
+        android:text="Hint" />
+
+    <TextView
+        android:id="@+id/giveHint"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/keyboard"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="297dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="26dp"
+        android:text=""
+        android:textSize="20dp" />
+
+
 </RelativeLayout>
