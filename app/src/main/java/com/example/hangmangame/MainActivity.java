@@ -1,10 +1,16 @@
 package com.example.hangmangame;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
+import android.app.FragmentTransaction;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,8 +22,9 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, Game.gameListener {
 
     Game game;
     Button q, w, e, r, t, y, u, i, o, p;
@@ -26,8 +33,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button restart;
     Button hint;
     TextView giveHint;
+    ArrayList<Button> allButtons;
     ArrayList<Button> inactive;
-    ArrayList<Button> keyboard;
     private int numHint = 0;
     int orientation;
 
@@ -36,8 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         orientation = this.getResources().getConfiguration().orientation;
+        setAllButtons();
 
         //get Hint only if in landscape mode
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -45,10 +52,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             hint = setButton(R.id.hint);
         }
 
-        game = new Game();
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragmentFrame, game).commit();
-        inactive = new ArrayList<>();
+        //Log.d("SAVED STATE ", String.valueOf(savedInstanceState==null));
+        if(savedInstanceState == null){
+            game = new Game();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragmentFrame, game, "myFragment")
+                    .setReorderingAllowed(true)
+//                    .addToBackStack("save")
+                    .commit();
+            inactive = new ArrayList<>();
 
+        }
+        else{
+            game = (Game) getSupportFragmentManager()
+                    .findFragmentByTag("myFragment");
+            inactive = (ArrayList<Button>) getLastCustomNonConfigurationInstance();
+            for (int i=0; i<inactive.size(); i++){
+//                Log.d("TYPE", String.valueOf(inactive.get(i).getId()));
+                findViewById(inactive.get(i).getId()).setEnabled(false);
+            }
+        }
+        restart = setButton(R.id.restart);
+        allButtons=new ArrayList<Button>();
+        allButtons.addAll(Arrays.asList(q,w,e,r,t,y,u,i,o,p,a,s,d,f,g,h,j,k,l,z,x,c,v,b,n,m));
+    }
+
+    private Button setButton(int id) {
+        Button button = findViewById(id);
+        button.setOnClickListener(this);
+        return button;
+    }
+
+    private void setAllButtons(){
         q = setButton(R.id.q);
         w = setButton(R.id.w);
         e = setButton(R.id.e);
@@ -75,17 +110,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         b = setButton(R.id.b);
         n = setButton(R.id.n);
         m = setButton(R.id.m);
-        restart = setButton(R.id.restart);
-
-        keyboard=new ArrayList<Button>();
-        keyboard.addAll(Arrays.asList(q,w,e,r,t,y,u,i,o,p,a,s,d,f,g,h,j,k,l,z,x,c,v,b,n,m));
-        Log.d("LOOK", keyboard.toString());
-    }
-
-    private Button setButton(int id) {
-        Button button = findViewById(id);
-        button.setOnClickListener(this);
-        return button;
     }
 
     @Override
@@ -100,9 +124,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (buttonText.equals("New Game")) {
             game.newGame();
-            for (int i = 0; i < inactive.size(); i++) {
-                inactive.get(i).setEnabled(true);
-            }
+//            for (int i = 0; i < inactive.size(); i++) {
+//                inactive.get(i).setEnabled(true);
+//            }
+            buttonsControl(true);
             inactive.removeAll(inactive);
 
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
@@ -134,17 +159,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     numHint++;
                     giveHint.setText(game.hint);
 
-                    int iKeys = 0; //keeps track of index in keyboard array
+                    int iKeys = 0; //keeps track of index in allButtons array
                     int half = (26 - inactive.size())/2; //half of the remaining letters
                     Log.d("numKeysInactive", String.valueOf(inactive.size()));
                     Log.d("half left", String.valueOf(half));
                     int i = half;
                     while(i > 0){
-                        String btnVal = keyboard.get(iKeys).getText().toString();
-                        if(!inactive.contains(keyboard.get(iKeys)) && !game.currentWord.contains(btnVal)){
+                        String btnVal = allButtons.get(iKeys).getText().toString();
+                        if(!inactive.contains(allButtons.get(iKeys)) && !game.currentWord.contains(btnVal)){
                             //if the key is still active, and the letter is not in the word
-                            keyboard.get(iKeys).setEnabled(false);
-                            inactive.add(keyboard.get(iKeys));
+                            allButtons.get(iKeys).setEnabled(false);
+                            inactive.add(allButtons.get(iKeys));
                             i--;
                         }
                         iKeys++;
@@ -161,21 +186,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     vowels.addAll(Arrays.asList("a", "e", "i", "o", "u"));
                     Log.d("vowel List", vowels.toString());
 
-                    for (int i = 0; i <keyboard.size(); i++){
-                        String letter =  keyboard.get(i).getText().toString();
+                    for (int i = 0; i <allButtons.size(); i++){
+                        String letter =  allButtons.get(i).getText().toString();
                         Log.d("test", "Look here");
                         //iterate through all the letters
                         //if not inactive, and is a vowel in the word, place in the guessed word and disable the key
-                        if(!inactive.contains(keyboard.get(i)) && vowels.contains(letter) && game.currentWord.contains(letter)){
+                        if(!inactive.contains(allButtons.get(i)) && vowels.contains(letter) && game.currentWord.contains(letter)){
                             game.mainActivityButtonInput(letter);
-                            Log.d("Vowel Input", keyboard.get(i).getText().toString());
-                            keyboard.get(i).setEnabled(false);
-                            inactive.add(keyboard.get(i));
+                            Log.d("Vowel Input", allButtons.get(i).getText().toString());
+                            allButtons.get(i).setEnabled(false);
+                            inactive.add(allButtons.get(i));
                         }
                     }
                     game.drawHangman(game.chance);
                 }
             } //end of outermost else statement
         }//end of if buttontext = "Hint"
+    }
+
+    @Override
+    public void getResult(String input) {
+        if (input.equals("finish")) {
+            buttonsControl(false);
+            numHint = 3;
+        }
+    }
+
+    private void buttonsControl(boolean status) {
+        for (int i = 0; i < allButtons.size(); i++) {
+            if(status){
+                allButtons.get(i).setEnabled(status);
+            }
+            else{
+                findViewById(allButtons.get(i).getId()).setEnabled(false);
+                inactive.add(allButtons.get(i));
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt("numHint", numHint);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        numHint = savedInstanceState.getInt("numHint");
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return inactive;
     }
 }

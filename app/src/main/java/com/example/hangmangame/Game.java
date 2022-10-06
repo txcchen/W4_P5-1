@@ -41,7 +41,6 @@ public class Game extends Fragment {
 
     int kind, index, count, correct;
     String currentWord, hint;
-    int numHint = 0;
     LinearLayout linearLayout;
     ImageView imageView;
 
@@ -74,9 +73,17 @@ public class Game extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+        }
+        if(savedInstanceState != null){
+            getRetainInstance();
+            currentWord = savedInstanceState.getString("word");
+            count = savedInstanceState.getInt("count");
+            correct = savedInstanceState.getInt("count");
+            hint = savedInstanceState.getString("hint");
         }
     }
 
@@ -84,10 +91,12 @@ public class Game extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_game, container, false);
-        imageView = view.findViewById(R.id.progress);
-        linearLayout = view.findViewById(R.id.words);
-        startUp();
+        if(savedInstanceState ==null){
+            view = inflater.inflate(R.layout.fragment_game, container, false);
+            imageView = view.findViewById(R.id.progress);
+            linearLayout = view.findViewById(R.id.words);
+            startUp();
+        }
         return view;
     }
 
@@ -123,8 +132,6 @@ public class Game extends Fragment {
     }
 
     public void mainActivityButtonInput(String input) {
-
-
         if (currentWord.contains(input)) {
             char in = input.charAt(0);
             for (int i = 0; i < currentWord.length(); i++) {
@@ -139,6 +146,7 @@ public class Game extends Fragment {
             }
             if (count <= chance && correct == currentWord.length()) {
                 Toast.makeText(this.getContext(), "You Win!", Toast.LENGTH_SHORT).show();
+                listener.getResult("finish");
             }
         } else {
             if (!(input.equals("Hint")))
@@ -168,8 +176,10 @@ public class Game extends Fragment {
                 imageView.setImageResource(R.drawable.img_6);
                 break;
         }
-        if (count == chance)
+        if (count == chance) {
             Toast.makeText(this.getContext(), "You Lose!", Toast.LENGTH_SHORT).show();
+            listener.getResult("finish");
+        }
     }
 
     public void newGame() {
@@ -189,6 +199,15 @@ public class Game extends Fragment {
     public void onDetach() {
         super.onDetach();
         listener = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString("word", currentWord);
+        outState.putString("hint", hint);
+        outState.putInt("count", count);
+        outState.putInt("correct",correct);
+        super.onSaveInstanceState(outState);
     }
 
 }
