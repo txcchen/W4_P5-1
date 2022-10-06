@@ -78,13 +78,15 @@ public class Game extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        if(savedInstanceState != null){
-            getRetainInstance();
-            currentWord = savedInstanceState.getString("word");
-            count = savedInstanceState.getInt("count");
-            correct = savedInstanceState.getInt("count");
-            hint = savedInstanceState.getString("hint");
-        }
+
+// is already saved via setRetainInstance(true), so no need
+//         if(savedInstanceState != null){
+//             getRetainInstance();
+//             currentWord = savedInstanceState.getString("word");
+//             count = savedInstanceState.getInt("count");
+//             correct = savedInstanceState.getInt("count");
+//             hint = savedInstanceState.getString("hint");
+//         }
     }
 
     @Override
